@@ -83,13 +83,15 @@ def getOptions(args=sys.argv[1:]):
 ###
 
 def setup_logger(log_path):
-   log_level = logging.INFO
-   log_file = '{}/{}.log'.format(log_path, job_name)
+   logger = logging.getLogger('LIMS_logger')
+   log_fname = '{}/{}.log'.format(log_path, job_name)
    log_format = '[%(asctime)s][%(levelname)s]%(message)s'
+   logger.setLevel(logging.INFO)
+   fh = logging.FileHandler(log_fname)
+   fh.setFormatter(log_format)
+   logger.addHandler(fh)
 
-   logging.basicConfig(level=log_level, filename=log_file, format=log_format)
-
-   return log_file
+   return log_fname
 
 
 ###
