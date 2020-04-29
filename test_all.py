@@ -28,7 +28,7 @@ class TestBasic(unittest.TestCase):
       import lims_sync_7900ht
 
       # Hard-coded here. Will fail if the base URL is changed in the code.
-      prefixall = 'https://orfeu.cnag.crg.eu/prbblims_devel/api/covid19/'
+      prefixall = 'https://orfeu.cnag.crg.eu/prbblims/api/covid19/'
 
       with urlopen(prefixall) as response:
          data = response.read()
@@ -101,4 +101,26 @@ class TestBasic(unittest.TestCase):
       # Test identity of log file.
       self.assertEqual(logger.handlers[0].baseFilename, logfname)
 
+      # Test that you can push messages to log file.
+      logger.debug('debug')       # Not registered.
+      logger.info('info')         # Registered.
+      logger.warning('warning')   # Registered.
+      logger.error('error')       # Registered.
+      logger.critical('critical') # Registered.
+
+      with open(logfname) as f:
+         loglines = f.readlines()
+
+      # Check that 4 lines were registered.
+      self.assertEqual(len(loglines), 4)
+
+      head = r'\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d+\]'
+      match = re.match(head + r'\[INFO\]info', loglines[0])
+      self.assertIsNotNone(match)
+      match = re.match(head + r'\[WARNING\]warning', loglines[1])
+      self.assertIsNotNone(match)
+      match = re.match(head + r'\[ERROR\]error', loglines[2])
+      self.assertIsNotNone(match)
+      match = re.match(head + r'\[CRITICAL\]critical', loglines[3])
+      self.assertIsNotNone(match)
 

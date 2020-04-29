@@ -88,7 +88,7 @@ def setup_logger(log_path):
    log_format = '[%(asctime)s][%(levelname)s]%(message)s'
    logger.setLevel(logging.INFO)
    fh = logging.FileHandler(log_fname)
-   fh.setFormatter(log_format)
+   fh.setFormatter(logging.Formatter(log_format))
    logger.addHandler(fh)
 
    return log_fname
